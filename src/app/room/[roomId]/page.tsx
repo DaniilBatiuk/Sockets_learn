@@ -29,7 +29,6 @@ const getCachedMessages = unstable_cache(
 export default async function Room({ params }: PageProps) {
   const { roomId } = params;
   const existingMessages = await getCachedMessages(roomId);
-  console.log(existingMessages);
   const serializedMessages = existingMessages.map(message => ({
     text: message.text,
     id: message.id,
