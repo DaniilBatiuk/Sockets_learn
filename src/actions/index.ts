@@ -18,3 +18,6 @@ export async function sendMessageAction(message: string, roomId: string) {
     throw error;
   }
 }
+export async function revalidateMessage() {
+  revalidateTag("messages");
+}

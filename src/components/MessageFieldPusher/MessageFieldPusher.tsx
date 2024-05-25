@@ -1,10 +1,11 @@
 "use client";
 
 import { Button, TextField } from "@mui/material";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 
 import styles from "./MessageFieldPusher.module.scss";
-import { sendMessageAction } from "@/actions";
+import { revalidateMessage } from "@/actions";
+import { myAxios } from "@/axios";
 
 interface MessageFieldPusherProps {
   roomId: string;
@@ -13,18 +14,22 @@ interface MessageFieldPusherProps {
 export const MessageFieldPusher: React.FC<MessageFieldPusherProps> = ({ roomId }) => {
   const [message, setMessage] = useState("");
 
-  const sendMessage = useCallback(async () => {
-    if (message.trim() === "") return;
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     try {
-      await sendMessageAction(message, roomId);
+      await myAxios.post("/api/messagePusher", {
+        roomId,
+        text: message,
+      });
+      revalidateMessage();
       setMessage("");
     } catch (error) {
       console.error("Error sending message:", error);
     }
-  }, [message, roomId]);
+  };
 
   return (
-    <div className={styles.message__field}>
+    <form onSubmit={handleSubmit} className={styles.message__field}>
       <TextField
         sx={{ width: 210 }}
         label="Input message"
@@ -35,9 +40,9 @@ export const MessageFieldPusher: React.FC<MessageFieldPusherProps> = ({ roomId }
           setMessage(event.target.value);
         }}
       />
-      <Button variant="contained" onClick={sendMessage}>
+      <Button variant="contained" type="submit">
         Send message
       </Button>
-    </div>
+    </form>
   );
 };
