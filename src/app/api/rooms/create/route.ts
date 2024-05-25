@@ -1,3 +1,5 @@
+import { NextRequest } from "next/server";
+
 import prisma from "@/utils/prisma";
 
 export async function GET() {
@@ -7,3 +9,5 @@ export async function GET() {
 
   return new Response(createdRoom.id);
 }
+
+export async function POST(req: NextRequest) {}
